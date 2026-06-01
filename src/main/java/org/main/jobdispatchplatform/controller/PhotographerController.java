@@ -1,5 +1,7 @@
 package org.main.jobdispatchplatform.controller;
 
+import jakarta.validation.Valid;
+import org.main.jobdispatchplatform.common.Result;
 import org.main.jobdispatchplatform.entity.Photographer;
 import org.main.jobdispatchplatform.mapper.PhotographerMapper;
 import org.springframework.web.bind.annotation.*;
@@ -16,31 +18,31 @@ public class PhotographerController {
     }
 
     @GetMapping("/list")
-    public List<Photographer> findAll() {
-        return photographerMapper.findAll();
+    public Result<List<Photographer>> findAll() {
+        return Result.success(photographerMapper.findAll());
     }
 
     @GetMapping("/{id}")
-    public Photographer findById(@PathVariable int id) {
-        return photographerMapper.findById(id);
+    public Result<Photographer> findById(@PathVariable int id) {
+        return Result.success(photographerMapper.findById(id));
     }
 
     @PostMapping
-    public String insert(@RequestBody Photographer photographer){
+    public Result<String> insert(@Valid @RequestBody Photographer photographer){
         photographerMapper.insert(photographer);
-        return "添加成功";
+        return Result.success("添加成功");
     }
 
     @PutMapping
-    public String update(@RequestBody Photographer photographer) {
+    public Result<String> update(@Valid @RequestBody Photographer photographer) {
         photographerMapper.update(photographer);
-        return "修改成功";
+        return Result.success("修改成功");
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable int id) {
+    public Result<String> delete(@Valid @PathVariable int id) {
         photographerMapper.delete(id);
-        return "删除成功";
+        return Result.success("删除成功");
     }
 
 }

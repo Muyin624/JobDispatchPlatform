@@ -1,5 +1,7 @@
 package org.main.jobdispatchplatform.controller;
 
+import jakarta.validation.Valid;
+import org.main.jobdispatchplatform.common.Result;
 import org.main.jobdispatchplatform.entity.Channel;
 import org.main.jobdispatchplatform.mapper.ChannelMapper;
 import org.springframework.web.bind.annotation.*;
@@ -16,30 +18,30 @@ public class ChannelController {
     }
 
     @GetMapping("/list")
-    public List<Channel> list() {
-        return channelMapper.findAll();
+    public Result<List<Channel>> list() {
+        return Result.success(channelMapper.findAll());
     }
 
     @GetMapping("/{id}")
-    public Channel get(@PathVariable int id) {
-        return channelMapper.findById(id);
+    public Result<Channel> get(@Valid @PathVariable int id) {
+        return Result.success(channelMapper.findById(id));
     }
 
     @PostMapping
-    public String insert(@RequestBody Channel channel) {
+    public Result<String> insert(@Valid @RequestBody Channel channel) {
         channelMapper.insert(channel);
-        return "新增成功";
+        return Result.success("新增成功");
     }
 
     @PutMapping
-    public String update(@RequestBody Channel channel) {
+    public Result<String> update(@Valid @RequestBody Channel channel) {
         channelMapper.update(channel);
-        return "修改成功";
+        return Result.success("修改成功");
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable int id) {
+    public Result<String> delete(@Valid @PathVariable int id) {
         channelMapper.delete(id);
-        return "删除成功";
+        return Result.success("删除成功");
     }
 }
