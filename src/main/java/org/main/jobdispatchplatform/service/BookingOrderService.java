@@ -52,8 +52,9 @@ public class BookingOrderService {
     }
 
     /**
-     * 下单
+     * 下单（带智能分配）
      */
+    @Transactional(rollbackFor = Exception.class)
     public BookingOrder placeOrder(BookingOrder bookingOrder) {
         log.info("用户 {} 开始下单", bookingOrder.getUserId());
 
@@ -63,12 +64,25 @@ public class BookingOrderService {
             throw new ResourceNotFoundException("渠道不存在");
         }
 
-        // 设置订单初始状态
-        bookingOrder.setStatus(OrderStatus.CREATED.getCode()); // 使用枚举，不要硬编码
+        // ============ 智能分配摄影师 ============
+        Photographer bestPhotographer = photographerAssignService.findBestPhotographer(
+            bookingOrder.getSpotId(),
+            bookingOrder.getStartTime(),
+            bookingOrder.getEndTime()
+        );
+
+        if (bestPhotographer == null) {
+            throw new OrderAssignException("该时间段暂无可用摄影师，请更换时间或地点");
+        }
+
+        // 设置分配的摄影师
+        bookingOrder.setPhotographerId(bestPhotographer.getId());
+        bookingOrder.setStatus(OrderStatus.ASSIGNED.getCode()); // 直接设置为已分配
         bookingOrder.setUpdateTime(LocalDateTime.now());
+
         bookingOrderMapper.insert(bookingOrder);
 
-        log.info("订单创建成功，订单ID: {}", bookingOrder.getId());
+        log.info("订单创建成功，订单ID: {}，智能分配摄影师: {}", bookingOrder.getId(), bestPhotographer.getName());
         return bookingOrder;
     }
 
