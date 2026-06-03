@@ -12,5 +12,12 @@ public class Photographer {
     @NotBlank(message = "摄影师名不能为空")
     private String name;
 
+    private Double homeLongitude;
+    private Double workLongitude;
+    private Double homeLatitude;
+    private Double workLatitude;
+
+    private Integer status;
+
     private LocalDateTime createTime;
 }

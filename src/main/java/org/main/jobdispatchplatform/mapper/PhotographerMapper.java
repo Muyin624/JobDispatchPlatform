@@ -19,6 +19,10 @@ public interface PhotographerMapper {
     @Update("UPDATE photographer SET name = #{name} WHERE id = #{id}")
     int update(Photographer photographer);
 
+    @Update("UPDATE photographer SET work_longitude = NULL, work_latitude = NULL, status = 1 WHERE id = #{id}")
+    void clearWorkLocation(int id);
+
+
     @Delete("DELETE FROM photographer WHERE id = #{id}")
     int delete(int id);
 }
